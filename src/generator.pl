@@ -34,3 +34,4 @@ my $state = Init->new();
 say $state->get_type();
 $state = Error->new();
 say $state->get_type();
+say $Constants::States{INIT};

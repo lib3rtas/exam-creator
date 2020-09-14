@@ -1,10 +1,10 @@
 package Init;
 use v5.32;
-use Constants;
 use Mouse; # automatically turns on strict and warnings
+use Constants;
 
 sub get_type(){
-    return $Constants::States{"ERROR"};
+    return $Constants::States{'INIT'};
 }
 
 sub handle_empty_line(){
@@ -33,9 +33,10 @@ __PACKAGE__->meta->make_immutable();
 package Error;
 use v5.32;
 use Mouse; # automatically turns on strict and warnings
+use Constants;
 
 sub get_type(){
-    return 0;
+    return $Constants::States{'ERROR'};
 }
 
 sub handle_empty_line(){
