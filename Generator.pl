@@ -35,6 +35,7 @@ my $current_question = Question->new(
 );
 
 while(my $line = readline(FILE)){
+    readline();
     state $current_state = Header_State->new();
     given ($line) {
         when ($Constants::question_regex) { 
@@ -43,7 +44,8 @@ while(my $line = readline(FILE)){
             $current_state->handle_question_line(
                 \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
@@ -51,9 +53,10 @@ while(my $line = readline(FILE)){
             print 'UNMARKED_ANSWER'; 
             print $line; 
             $current_state->handle_unmarked_answer_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
@@ -61,9 +64,10 @@ while(my $line = readline(FILE)){
             print 'MARKED_ANSWER  '; 
             print $line; 
             $current_state->handle_marked_answer_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
@@ -71,9 +75,10 @@ while(my $line = readline(FILE)){
             print 'SEPERATOR      '; 
             print $line; 
             $current_state->handle_seperator_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
@@ -81,9 +86,10 @@ while(my $line = readline(FILE)){
             print 'TEXT           '; 
             print $line; 
             $current_state->handle_text_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
@@ -91,30 +97,40 @@ while(my $line = readline(FILE)){
             print 'EMPTY_LINE     ';
             print $line; 
             $current_state->handle_empty_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
         default { 
             $current_state->handle_unknown_line(
-                $current_state,
+                \$current_state,
                 \$line,
-                $current_question,
+                \$current_question,
+                \@questions,
                 $header
             );
         }
     }
 }
 
-print "\n\n"; 
+print $questions[0];
 
-print "HEADER";
-print "\n\n"; 
-
+print "\n"; 
+print "--------- HEADER ------------";
 print $header->content;
+print "--------- HEADER ------------";
 
-print "\n\n"; 
+print "\n"; 
+print "--------- QUESTIONS ------------";
+foreach my $quest (@questions){
+    print $quest->question;
+    print "--------- NEXT ------------"; 
+}
+print "--------- QUESTIONS ------------";
+
+print "\n"; 
 
 close FILE;

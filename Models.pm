@@ -2,11 +2,20 @@ package Question;
 use v5.32;
 use Mouse; # automatically turns on strict and warnings
 use diagnostics;
+use feature 'signatures';
+use experimental 'signatures';
 
 # attributes
 has 'answers' => (is => 'rw', isa => 'ArrayRef');       # storing the answers as strings
 has 'answers_value' => (is => 'rw', isa => 'ArrayRef'); # storing if answer is right/wrong, matching index with @answers
 has 'question' => (is => 'rw', isa => 'Str');           # question string
+
+sub get_answers($self) {
+    return $self->answers;
+}
+sub get_answers_value($self) {
+    return $self->answers_value;
+}
 
 sub append_line_to_question {
     # parameters
