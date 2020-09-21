@@ -127,8 +127,10 @@ print "\n";
 print "--------- QUESTIONS ------------";
 foreach my $quest (@questions){
     print $quest->question;
+    $quest->print_answers();
     print "--------- NEXT ------------"; 
 }
+print "\n"; 
 print "--------- QUESTIONS ------------";
 
 print "\n"; 
