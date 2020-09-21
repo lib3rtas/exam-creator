@@ -61,3 +61,15 @@ print $q->question. "\n";
 
 #$q->append_line_to_answer(0, "Test");
 #$q->print_answers();
+
+print "\n\n\n\n\n";
+
+my @b = (1..5);
+
+print("Before the loop: @b \n");
+
+for(@b){
+	$_ = $_ * 2; 
+}
+
+print("After the loop: @b \n");

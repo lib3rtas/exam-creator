@@ -44,9 +44,12 @@ sub print_answers {
     my $self = shift;
     my $output = shift;
 
-    # append the line given to a specific answer
-    foreach my $answer (@{$self->answers}){
-        print $answer;
+    my @tmp = @{$self->answers};
+    my @tmp_val = @{$self->answers_value};
+    for(my $i=0; $i <= $#tmp; $i++){
+        print "------ ANSWER ----------\n";
+	    print("$tmp[$i] \n");
+        print("$tmp_val[$i] \n");
     }
 }
 
