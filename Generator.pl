@@ -20,10 +20,11 @@ unless($number_arguments == 1){
     die qq{Invalid number of arguments.};
 }
 
-# open file
+# open master file
 my $master_file = $ARGV[0];
 open(FILE, '<', $master_file) or die $!; #TODO better debug information for user
 
+# initialize objects for line processing
 my $header = Header->new(
     content => ""
 );
@@ -127,7 +128,8 @@ foreach my $question (@questions){
     $exam_string .= $Constants::seperator_line;
 }
 
-print $EXAM_FILE $exam_string;
+print($EXAM_FILE $exam_string);
+close($EXAM_FILE);
 
 # helper methods
 sub create_exam_title(){

@@ -92,7 +92,6 @@ sub handle_marked_answer_line ($self, $state_, $line_, $current_question_, $ques
     push(@{${$current_question_}->get_answers()}, ${$line_});
     push(@{${$current_question_}->get_answers_value()}, 1);
     ${$state_} = Answer_State->new();
-    print $header_->content;
     return 1;
 }
 
@@ -154,7 +153,6 @@ sub handle_marked_answer_line ($self, $state_, $line_, $current_question_, $ques
     push(@{${$current_question_}->get_answers()}, ${$line_});
     push(@{${$current_question_}->get_answers_value()}, 1);
     ${$state_} = Answer_State->new();
-    print $header_->content;
     return 1;
 }
 

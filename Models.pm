@@ -1,7 +1,7 @@
 package Question;
 use v5.32;
 use Mouse; # automatically turns on strict and warnings
-use diagnostics;
+use List::Util 'shuffle';
 use feature 'signatures';
 use experimental 'signatures';
 use Constants;
@@ -18,29 +18,20 @@ sub get_answers_value($self) {
     return $self->answers_value;
 }
 
-sub append_line_to_question {
-    # parameters
-    my $self = shift;
-    my $line = shift;
-
+sub append_line_to_question($self, $line) {
     # append the line given to the question
     my $tmp = $self->question . $line; #
     $self->question($tmp);
     return 1;
 }
 
-sub append_line_to_answer {
-    # parameters
-    my $self          = shift;
-    my $answer_number = shift;
-    my $line          = shift;
-
+sub append_line_to_answer($self, $answer_number, $line) {
     # append the line given to a specific answer
     @{$self->answers}[$answer_number] .= $line;
     return 1;
 }
 
-sub print_answers ($self, $filehandle){
+sub print_answers ($self, $filehandle) {
     my @tmp = @{$self->answers};
     my @tmp_val = @{$self->answers_value};
     for(my $i=0; $i <= $#tmp; $i++){
@@ -49,13 +40,16 @@ sub print_answers ($self, $filehandle){
     }
 }
 
-sub get_randomized_answers_string($self){
-    my @answers = @{$self->answers};
-    my @answers_value = @{$self->answers_value};
+sub get_randomized_answers_string($self) {
+    my @answers = shuffle(@{$self->answers});
     my $answers_string = "";
 
     for(my $i=0; $i <= $#answers; $i++){
-        if($answers_value[$i]){
+        # remove unnecessary newlines from answer
+        $answers[$i] = $answers[$i] =~ s/\n\n/\n/grx;
+
+        # if answer is marked/correct remove marker and append to string
+        if($answers[$i] =~ qr/^\s*\[\s*X\s*\]/){
             $answers_string .= $answers[$i] =~ s/^\s*\[\s*X\s*\]/$Constants::answer_identation\[ \]/gr; 
         } else {
             $answers_string .= $answers[$i];
@@ -68,19 +62,15 @@ sub get_randomized_answers_string($self){
 __PACKAGE__->meta->make_immutable();
 
 
-
 package Header;
 use v5.32;
 use Mouse; # automatically turns on strict and warnings
-use diagnostics;
+use feature 'signatures';
+use experimental 'signatures';
 
 has 'content' => (is => 'rw', isa => 'Str');   # question string
 
-sub append_line_to_header {
-    # parameters
-    my $self = shift;
-    my $line = shift;
-
+sub append_line_to_header($self, $line) {
     # append the line given to the question
     my $tmp = $self->content . $line; #
     $self->content($tmp);
