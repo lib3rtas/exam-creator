@@ -22,25 +22,25 @@ unless($number_arguments == 1){
 
 # open file
 my $master_file = $ARGV[0];
-open(FILE, '<', 'master_file.txt') or die $!; #TODO better debug information for user
+open(FILE, '<', $master_file) or die $!; #TODO better debug information for user
 
-my @questions = ();
 my $header = Header->new(
     content => ""
 );
+my @questions = ();
 my $current_question = Question->new(
     answers => [],
     answers_value => [], 
     question => ""
 );
 
+# process the master file linewise
 while(my $line = readline(FILE)){
-    readline();
     state $current_state = Header_State->new();
+
     given ($line) {
+
         when ($Constants::question_regex) { 
-            print 'QESTION        '; 
-            print $line; 
             $current_state->handle_question_line(
                 \$current_state,
                 \$line,
@@ -49,9 +49,8 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+
         when ($Constants::unmarked_answer_regex) { 
-            print 'UNMARKED_ANSWER'; 
-            print $line; 
             $current_state->handle_unmarked_answer_line(
                 \$current_state,
                 \$line,
@@ -60,9 +59,8 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+
         when ($Constants::marked_answer_regex) { 
-            print 'MARKED_ANSWER  '; 
-            print $line; 
             $current_state->handle_marked_answer_line(
                 \$current_state,
                 \$line,
@@ -71,9 +69,8 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+
         when ($Constants::seperator_regex) { 
-            print 'SEPERATOR      '; 
-            print $line; 
             $current_state->handle_seperator_line(
                 \$current_state,
                 \$line,
@@ -82,9 +79,8 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+
         when ($Constants::text_regex) { 
-            print 'TEXT           '; 
-            print $line; 
             $current_state->handle_text_line(
                 \$current_state,
                 \$line,
@@ -93,9 +89,8 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+
         when ($Constants::empty_line_regex) { 
-            print 'EMPTY_LINE     ';
-            print $line; 
             $current_state->handle_empty_line(
                 \$current_state,
                 \$line,
@@ -104,6 +99,7 @@ while(my $line = readline(FILE)){
                 $header
             );
         }
+        
         default { 
             $current_state->handle_unknown_line(
                 \$current_state,
@@ -115,24 +111,28 @@ while(my $line = readline(FILE)){
         }
     }
 }
+close(FILE);
 
-print $questions[0];
+# generate an exam file
+my $EXAM_FILE;
+open($EXAM_FILE, '>', create_exam_title()) or die $!;
 
-print "\n"; 
-print "--------- HEADER ------------";
-print $header->content;
-print "--------- HEADER ------------";
+my $exam_string = "";
+$exam_string .= $header->content;
+$exam_string .= $Constants::seperator_line;
 
-print "\n"; 
-print "--------- QUESTIONS ------------";
-foreach my $quest (@questions){
-    print $quest->question;
-    $quest->print_answers();
-    print "--------- NEXT ------------"; 
+foreach my $question (@questions){
+    $exam_string .= $question->question;
+    $exam_string .= $question->get_randomized_answers_string();
+    $exam_string .= $Constants::seperator_line;
 }
-print "\n"; 
-print "--------- QUESTIONS ------------";
 
-print "\n"; 
+print $EXAM_FILE $exam_string;
 
-close FILE;
+# helper methods
+sub create_exam_title(){
+    my ($second,$minute,$hour,$day,$month,$year) = localtime();
+    # create timestamp in format YYYYMMDD-hhmmss-
+    my $timestamp = sprintf("%.4d%.2d%.2d-%.2d%.2d%.2d-", $year+1900, $month+1, $day, $hour, $minute, $second);
+    return "$timestamp$master_file";
+}

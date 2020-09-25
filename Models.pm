@@ -4,6 +4,7 @@ use Mouse; # automatically turns on strict and warnings
 use diagnostics;
 use feature 'signatures';
 use experimental 'signatures';
+use Constants;
 
 # attributes
 has 'answers' => (is => 'rw', isa => 'ArrayRef');       # storing the answers as strings
@@ -39,18 +40,29 @@ sub append_line_to_answer {
     return 1;
 }
 
-sub print_answers {
-    # parameters
-    my $self = shift;
-    my $output = shift;
-
+sub print_answers ($self, $filehandle){
     my @tmp = @{$self->answers};
     my @tmp_val = @{$self->answers_value};
     for(my $i=0; $i <= $#tmp; $i++){
-        print "------ ANSWER ----------\n";
-	    print("$tmp[$i] \n");
-        print("$tmp_val[$i] \n");
+        if($tmp_val[$i]){}
+	    print $filehandle $tmp[$i];
     }
+}
+
+sub get_randomized_answers_string($self){
+    my @answers = @{$self->answers};
+    my @answers_value = @{$self->answers_value};
+    my $answers_string = "";
+
+    for(my $i=0; $i <= $#answers; $i++){
+        if($answers_value[$i]){
+            $answers_string .= $answers[$i] =~ s/^\s*\[\s*X\s*\]/$Constants::answer_identation\[ \]/gr; 
+        } else {
+            $answers_string .= $answers[$i];
+        }
+    }
+
+    return $answers_string;
 }
 
 __PACKAGE__->meta->make_immutable();

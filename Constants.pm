@@ -3,6 +3,10 @@ use v5.32;
 use strict;
 use warnings;
 
+our $seperator_line = "________________________________________________________________________________";
+
+our $answer_identation = "    ";
+
 our %states = (
     'ERROR'     => 0,
     'HEADER'    => 1,
