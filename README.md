@@ -29,12 +29,16 @@ The project is implemented in a object oriented fashion with the CPAN library Mo
 
 ### Main Files
 Generator.pl    generates exam files based on master file
+
 Grader.pl       grades exams files based on a given master file   
 
 ### Modules
 Reader.pm        handles reading in of exam files and transforming them to models(objects)
+
 Models.pm        contains core classes Question and Header
+
 States.pm        contains states and most of the state transition logic
+
 Constants.pm     contain several constants in order have easier maintanance of "global" information
 
 ## Code conventions / Information for better readability
